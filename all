@@ -1,0 +1,338 @@
+//종합버전
+#include <iostream>
+using namespace std;
+
+template<class T>
+class _stack
+{
+public:
+	struct Node
+	{
+		T val;
+		Node* next;
+		Node() {}
+		Node(T val) :val(val), next(0) {}
+	};
+	Node* head;
+	int _size;
+	stack()
+	{
+		head = 0;
+		_size = 0;
+	}
+	void push(T val)
+	{
+		Node* temp = new Node(val);
+		if (head == 0)
+			head = temp;
+		else
+		{
+			head->next = head;
+			head = temp;
+		}
+		_size++;
+	}
+	void pop()
+	{
+		Node* temp = head;
+		head = head->next;
+		delete temp;
+		_size--;
+	}
+	bool empty() const
+	{
+		return _size == 0;
+	}
+	T top() const
+	{
+		return head->val;
+	}
+	int size() const
+	{
+		return _size;
+	}
+};
+
+template<class T>
+class _queue
+{
+public:
+	struct Node
+	{
+		T val;
+		Node* next;
+		Node() {}
+		Node(T val) :val(val), next(0) {}
+	};
+	Node* head;
+	Node* tail;
+	int _size;
+	_queue()
+	{
+		head = tail = 0;
+		_size = 0;
+	}
+	void push(T val)
+	{
+		Node* temp = new Node(val);
+		if (head == 0)
+		{
+			head = tail = temp;
+		}
+		else
+		{
+			tail->next = temp;
+			tail = temp;
+		}
+		_size++;
+	}
+	void pop()
+	{
+		Node* temp = head;
+		head = head->next;
+		delete temp;
+		_size--;
+	}
+	bool empty() const
+	{
+		return _size == 0;
+	}
+	T front() const
+	{
+		return head->val;
+	}
+	T back() const
+	{
+		return tail->val;
+	}
+	int size() const
+	{
+		return _size;
+	}
+};
+
+template<class T>
+class _vector
+{
+public:
+	int _size;
+	int capacity;
+	T* arr;
+	_vector()
+	{
+		_size = 0;
+		capacity = 32;
+		arr = new T[capacity];
+	}
+	_vector(int k)
+	{
+		_size = k;
+		capacity = k;
+		arr = new T[capacity];
+	}
+	~_vector()
+	{
+		delete[] arr;
+	}
+	void clear()
+	{
+		delete[] arr;
+		_size = 0;
+		capacity = 32;
+		arr = new T[capacity];
+	}
+	void resize(int k)
+	{
+		T* temp;
+		temp = new T[k];
+		for (int i = 0; i < _size; i++)
+		{
+			temp[i] = arr[i];
+		}
+		delete[] arr;
+		arr = temp;
+		_size = capacity = k;
+	}
+	int size() const
+	{
+		return _size;
+	}
+	T* begin() const
+	{
+		return &arr[0];
+	}
+	T* end() const
+	{
+		return &arr[0] + _size;
+	}
+	void push_back(T val)
+	{
+		if (_size == capacity)
+		{
+			resize(_size * 2);
+			_size /= 2;
+		}
+		arr[_size++] = val;
+	}
+	void pop_back()
+	{
+		_size--;
+	}
+	T& operator[](int idx)
+	{
+		return arr[idx];
+	}
+	T operator[](int idx)const
+	{
+		return arr[idx];
+	}
+};
+
+template<typename It>
+void _swap(It& a, It& b)
+{
+	It c = a;
+	a = b;
+	b = c;
+}
+
+template<typename It,typename Comp>
+void _sort(It begin, It end, Comp comp)
+{
+	if (begin == end)
+		return;
+	_swap(*begin, *((end - begin) / 2 + begin));
+	It pi = begin;
+	It le = begin + 1;
+	It ri = end - 1;
+	while (le <= ri)
+	{
+		while (le <= ri && !comp(*pi, le))
+			le++;
+		while (le <= ri && !comp(*ri, *pi))
+			ri--;
+		if (le <= ri)
+			_swap(*le, *ri);
+	}
+	_swap(*pi, *ri);
+	_sort(begin,ri, comp);
+	_sort(ri + 1, end, comp);
+}
+
+template<typename A,typename B>
+struct _pair
+{
+	int first;
+	int second;
+	_pair(A a, B b) :first(a), second(b) {}
+	_pair() {}
+};
+
+bool cmp(const _pair<int, int>& a, const _pair<int, int>& b)
+{
+	if (a.first == b.first)
+		return a.second < b.second;
+	return a.first < b.first;
+}
+
+template<class T>
+class _priority_queue
+{
+public:
+	T* heap;
+	int _size;
+	int capacity;
+	_priority_queue()
+	{
+		_size = 0;
+		capacity = 100;
+		heap = new T[capacity];
+	}
+	void push(T val)
+	{
+		if (_size + 1 > capacity)
+			return;
+		heap[_size] = val;
+		int current = _size;
+		int parent = (_size - 1) / 2;
+		while (current > 0 && heap[current] > heap[parent])
+		{
+			swap(heap[current], heap[parent]);
+			current = parent;
+			parent = (parent - 1) / 2;
+		}
+		_size++;
+	}
+	void pop()
+	{
+		if (_size <= 0)
+			return;
+		int ret = heap[0];
+		_size--;
+
+		heap[0] = heap[_size];
+		int current = 0;
+		int leftChild = current * 2 + 1;
+		int rightChild = current * 2 + 2;
+		int maxNode = current;
+		while (leftChild < _size)
+		{
+			if (heap[maxNode] < heap[leftChild])
+			{
+				maxNode = leftChild;
+			}
+			if (rightChild < _size&&heap[maxNode] < heap[rightChild])
+			{
+				maxNode = rightChild;
+			}
+			if (maxNode == current)
+				break;
+			else
+			{
+				swap(heap[current], heap[maxNode]);
+				current = maxNode;
+				leftChild = current * 2 + 1;
+				rightChild = current * 2 + 2;
+			}
+		}
+	}
+	bool empty() const
+	{
+		return _size == 0;
+	}
+	T top() const
+	{
+		return heap[0];
+	}
+};
+
+int main(int argc, char* argv[])
+{
+	int T, N;
+
+	scanf("%d", &T);
+
+	for (int test_case = 1; test_case <= T; test_case++)
+	{
+		scanf("%d", &N);
+
+		_priority_queue<int> pq;
+
+		for (int i = 0; i < N; i++)
+		{
+			int value;
+			scanf("%d", &value);
+			pq.push(value);
+		}
+
+		printf("#%d\n", test_case);
+		while (!pq.empty())
+		{
+			printf("%d ", pq.top());
+			pq.pop();
+		}
+		printf("\n");
+	}
+
+	return 0;
+}
