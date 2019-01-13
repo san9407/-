@@ -1,0 +1,102 @@
+//신동갓님 블로그에서 C로 짠걸 c++버전으로 바꿔봄
+template<class T>
+class _priority_queue
+{
+public:
+	T* heap;
+	int _size;
+	int capacity;
+	_priority_queue()
+	{
+		_size = 0;
+		capacity = 100;
+		heap = new T[capacity];
+	}
+	void push(T val)
+	{
+		if (_size + 1 > capacity)
+			return;
+		heap[_size] = val;
+		int current = _size;
+		int parent = (_size - 1) / 2;
+		while (current > 0 && heap[current] > heap[parent])
+		{
+			swap(heap[current], heap[parent]);
+			current = parent;
+			parent = (parent - 1) / 2;
+		}
+		_size++;
+	}
+	void pop()
+	{
+		if (_size <= 0)
+			return;
+		int ret = heap[0];
+		_size--;
+
+		heap[0] = heap[_size];
+		int current = 0;
+		int leftChild = current * 2 + 1;
+		int rightChild = current * 2 + 2;
+		int maxNode = current;
+		while (leftChild < _size)
+		{
+			if (heap[maxNode] < heap[leftChild])
+			{
+				maxNode = leftChild;
+			}
+			if (rightChild < _size&&heap[maxNode] < heap[rightChild])
+			{
+				maxNode = rightChild;
+			}
+			if (maxNode == current)
+				break;
+			else
+			{
+				swap(heap[current], heap[maxNode]);
+				current = maxNode;
+				leftChild = current * 2 + 1;
+				rightChild = current * 2 + 2;
+			}
+		}
+	}
+	bool empty() const
+	{
+		return _size == 0;
+	}
+	T top() const
+	{
+		return heap[0];
+	}
+};
+
+int main(int argc, char* argv[])
+{
+	int T, N;
+
+	scanf("%d", &T);
+
+	for (int test_case = 1; test_case <= T; test_case++)
+	{
+		scanf("%d", &N);
+
+		_priority_queue<int> pq;
+
+		for (int i = 0; i < N; i++)
+		{
+			int value;
+			scanf("%d", &value);
+			pq.push(value);
+		}
+
+		printf("#%d\n", test_case);
+		while (!pq.empty())
+		{
+			printf("%d ", pq.top());
+			pq.pop();
+		}
+		printf("\n");
+	}
+
+	return 0;
+}
