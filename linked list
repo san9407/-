@@ -1,0 +1,128 @@
+//https://huiyu.tistory.com/entry/%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0-%EC%B2%B4%EC%9D%B4%EB%8B%9D-%ED%95%B4%EC%8B%9C-%ED%85%8C%EC%9D%B4%EB%B8%94Chaining-Hash-Table
+//이분껄 응용해서 1월19일날 있었던 비형 문제를 링크드리스트로 연습할겸 짜보았다.
+//1차원은 쉬운편인데 이렇게 체이닝으로 하는게 모든방면에서 응용하기 쉬울듯
+#include <cstdio>
+#include <cmath>
+#include <queue>
+#include <algorithm>
+using namespace std;
+const int INF = 1000000000;
+
+struct Node
+{
+	int data;
+	Node* prev;
+	Node* next;
+};
+
+Node* arr[10][10];
+
+void Add(int x,int y, Node* node)
+{
+	if (arr[x][y] == 0)
+	{
+		arr[x][y] = node;
+	}
+	else
+	{
+		node->next = arr[x][y];
+		arr[x][y] = node;
+	}
+}
+
+void Del(int x, int y,int data)
+{
+	if (arr[x][y] == 0)
+		return;
+
+	Node* delNode = 0;
+	if (arr[x][y]->data == data)
+	{
+		delNode = arr[x][y];
+		arr[x][y] = arr[x][y]->next;
+	}
+	else
+	{
+		Node* node = arr[x][y];
+		Node* next2 = node->next;
+		while (next2)
+		{
+			if (next2->data == data)
+			{
+				node->next = next2->next;
+				delNode = next2;
+				break;
+			}
+			node = next2;
+			next2 = node->next;
+		}
+	}
+	free(delNode);
+}
+
+Node* Find(int x, int y, int data)
+{
+	if (arr[x][y] == 0)
+		return 0;
+	if (arr[x][y]->data == data)
+		return arr[x][y];
+	else
+	{
+		Node* node = arr[x][y];
+		while (node->next)
+		{
+			if (node->next->data == data)
+			{
+				return node->next;
+			}
+			node = node->next;
+		}
+	}
+	return 0;
+}
+
+void printAll()
+{
+	for (int i = 0; i < 10; i++)
+	{
+		for (int j = 0; j < 10; j++)
+		{
+			if (arr[i][j] != 0)
+			{
+				Node* node = arr[i][j];
+				printf("%d %d %d\n", i, j, node->data);
+				while (node->next)
+				{
+					node = node->next;
+					printf("%d %d %d\n", i, j, node->data);
+				}
+			}
+		}
+	}
+}
+
+int main()
+{
+	int N;
+	scanf("%d", &N);
+	for (int i = 0; i < N; i++)
+	{
+		int x, y,d;
+		scanf("%d %d %d", &x, &y,&d);
+		Node* node = (Node*)malloc(sizeof(Node));
+		node->data = d;
+		node->next = NULL;
+		Add(x, y, node);
+	}
+	printAll();
+	int M;
+	scanf("%d", &M);
+	for (int i = 0; i < M; i++)
+	{
+		int x, y, d;
+		scanf("%d %d %d", &x, &y, &d);
+		Del(x, y, d);
+	}
+	printAll();
+	return 0;
+}
