@@ -1,0 +1,124 @@
+//SW Expert Academy
+//2948.문자열 교집합
+//hash를 open addressing 방법으로 구현
+//cstrcmp와 cstrcpy를 좀더 빠르게 바꿀수 있을듯
+#include <cstdio>
+using namespace std;
+#define MAX_TABLE 300097
+ 
+int cstrlen(char* str)
+{
+    int i;
+    for (i = 0; str[i]; i++);
+    return i;
+}
+ 
+int cstrcmp(char* A, char* B)
+{
+    int lenA = cstrlen(A);
+    int lenB = cstrlen(B);
+    if (lenA != lenB)
+        return 1;
+    else
+    {
+        for (int i = 0; i < lenA; i++)
+        {
+            if (A[i] != B[i])
+                return 1;
+        }
+        return 0;
+    }
+}
+ 
+void cstrcpy(char* A, char* B)
+{
+    int lenB = cstrlen(B);
+    for (int i = 0; i < lenB; i++)
+    {
+        A[i] = B[i];
+    }
+    A[lenB] = '\0';
+}
+ 
+struct Hash
+{
+    int use;
+    char data[51];
+};
+ 
+Hash tb[MAX_TABLE];
+ 
+unsigned long hash(const char *str)
+{
+    unsigned long hash = 5381;
+    int c;
+ 
+    while (c = *str++)
+    {
+        hash = (((hash << 5) + hash) + c) % MAX_TABLE;
+    }
+ 
+    return hash % MAX_TABLE;
+}
+ 
+int find(char *data)
+{
+    unsigned long h = hash(data);
+    int cnt = MAX_TABLE;
+ 
+    while (tb[h].use != 0 && cnt--)
+    {
+        if (cstrcmp(tb[h].data, data) == 0)
+        {
+            return 1;
+        }
+        h = (h + 1) % MAX_TABLE;
+    }
+    return 0;
+}
+ 
+void add(char *data)
+{
+    unsigned long h = hash(data);
+ 
+    while (tb[h].use != 0)
+    {
+        h = (h + 1) % MAX_TABLE;
+    }
+    tb[h].use = 1;
+    cstrcpy(tb[h].data, data);
+}
+ 
+void init()
+{
+    for (int i = 0; i < MAX_TABLE; i++)
+        tb[i].use = 0;
+}
+ 
+int main()
+{
+    int T;
+    scanf("%d", &T);
+    for (int tc = 1; tc <= T; tc++)
+    {
+        init();
+        int N, M;
+        scanf("%d %d", &N, &M);
+        for (int i = 0; i < N; i++)
+        {
+            char str[51];
+            scanf("%s", str);
+            add(str);
+        }
+        int ans = 0;
+        for (int i = 0; i < M; i++)
+        {
+            char str[51];
+            scanf("%s", str);
+            if (find(str) == 1)
+                ans++;
+        }
+        printf("#%d %d\n", tc,ans);
+    }
+    return 0;
+}
