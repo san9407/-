@@ -1,0 +1,138 @@
+#include <cstdio>
+using namespace std;
+
+struct Node
+{
+	int data;
+	Node* next;
+};
+
+Node* arr[10][10];
+
+void Add(int x, int y,int d)
+{
+	Node* node = new Node;
+	node->data = d;
+	node->next = 0;
+	if (arr[x][y] == 0)
+	{
+		arr[x][y] = node;
+	}
+	else
+	{
+		node->next = arr[x][y];
+		arr[x][y] = node;
+	}
+}
+
+void Del(int x, int y, int data)
+{
+	if (arr[x][y] == 0)
+		return;
+
+	Node* delNode = 0;
+	if (arr[x][y]->data == data)
+	{
+		delNode = arr[x][y];
+		arr[x][y] = arr[x][y]->next;
+	}
+	else
+	{
+		Node* node = arr[x][y];
+		Node* next2 = node->next;
+		while (next2)
+		{
+			if (next2->data == data)
+			{
+				node->next = next2->next;
+				delNode = next2;
+				break;
+			}
+			node = next2;
+			next2 = node->next;
+		}
+	}
+	delete delNode;
+}
+
+Node* Find(int x, int y, int data)
+{
+	if (arr[x][y] == 0)
+		return 0;
+	if (arr[x][y]->data == data)
+		return arr[x][y];
+	else
+	{
+		Node* node = arr[x][y];
+		while (node->next)
+		{
+			if (node->next->data == data)
+			{
+				return node->next;
+			}
+			node = node->next;
+		}
+	}
+	return 0;
+}
+
+void printAll()
+{
+	for (int i = 0; i < 10; i++)
+	{
+		for (int j = 0; j < 10; j++)
+		{
+			if (arr[i][j] != 0)
+			{
+				Node* node = arr[i][j];
+				printf("%d %d %d\n", i, j, node->data);
+				while (node->next)
+				{
+					node = node->next;
+					printf("%d %d %d\n", i, j, node->data);
+				}
+			}
+		}
+	}
+}
+
+void delAll()
+{
+	for (int i = 0; i < 10; i++)
+	{
+		for (int j = 0; j < 10; j++)
+		{
+			while(arr[i][j])
+			{
+				Node* temp = arr[i][j];
+				arr[i][j] = arr[i][j]->next;
+				delete temp;
+			}
+		}
+	}
+}
+
+int main()
+{
+	int N;
+	scanf("%d", &N);
+	for (int i = 0; i < N; i++)
+	{
+		int x, y, d;
+		scanf("%d %d %d", &x, &y, &d);
+		Add(x, y, d);
+	}
+	printAll();
+	int M;
+	scanf("%d", &M);
+	for (int i = 0; i < M; i++)
+	{
+		int x, y, d;
+		scanf("%d %d %d", &x, &y, &d);
+		Del(x, y, d);
+	}
+	printAll();
+	delAll();
+	printAll();
+	return 0;
+}
