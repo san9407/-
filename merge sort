@@ -1,4 +1,24 @@
 //sw expert academy에 나온 머지소트를 한번에 이렇게 짜는거 존멋;
+
+int cstrcmp(char* A, char* B)
+{
+	int i = 0;
+	while (A[i] != '0')
+	{
+		if (A[i] != B[i])
+			break;
+		i++;
+	}
+	return (A[i] - B[i]);
+}
+
+bool cmp(char* a, char* b)
+{
+	if (cstrcmp(a, b) < 0)
+		return true;
+	return false;
+}
+
 void sort(int a[], int len, bool compare(char*, char*))
 {
 	if (len < 2)
@@ -20,4 +40,19 @@ void sort(int a[], int len, bool compare(char*, char*))
 		buf[k++] = a[j++];
 	for (int i = 0; i < len; i++)
 		a[i] = buf[i];
+}
+
+int main() 
+{
+	for (int tc = 1; tc <= 10; tc++)
+	{
+		scanf("%d", &n);
+		scanf("%s", in);
+		l = cstrlen(in);
+		for (int i = 0; i < l; i++)
+			order[i] = i;
+		sort(order, l, cmp);
+		printf("%s\n", in + order[n - 1]);
+	}
+	return 0;
 }
