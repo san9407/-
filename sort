@@ -29,7 +29,7 @@ void _sort(It begin, It end, Comp comp)
 			le++;
 		while (le <= ri && !comp(*ri, *pi))
 			ri--;
-		if (le <<= ri)
+		if (le <= ri)
 			_swap(*le, *ri);
 	}
 	_swap(*pi, *ri);
