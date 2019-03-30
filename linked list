@@ -3,7 +3,7 @@ using namespace std;
 
 struct Node
 {
-	char data;
+	char c;
 	Node* prev;
 	Node* next;
 };
@@ -12,10 +12,21 @@ Node* ptr;
 Node* head;
 Node* tail;
 
-void Add(char c)
+void init()
+{
+	Node* node = new Node;
+	head = tail = node;
+	head->next = tail;
+	head->prev = tail;
+	tail->next = head;
+	tail->prev = head;
+	ptr = head;
+}
+
+void add(char c)
 {
 	Node* temp = new Node;
-	temp->data = c;
+	temp->c = c;
 	ptr->next->prev = temp;
 	temp->next = ptr->next;
 	ptr->next = temp;
@@ -23,22 +34,22 @@ void Add(char c)
 	ptr = temp;
 }
 
+void del()
+{
+	Node* temp = ptr;
+	ptr->prev->next = temp->next;
+	ptr->next->prev = temp->prev;
+	ptr = temp->prev;
+	delete temp;
+}
+
 int main()
 {
+	init();
 	char str[100001];
 	scanf("%s", str);
-	Node* node = new Node;
-	head = node;
-	tail = head;
-	head->next = tail;
-	head->prev = tail;
-	tail->next = head;
-	tail->prev = head;
-	ptr = head;
 	for (int i = 0; str[i]; i++)
-	{
-		Add(str[i]);
-	}
+		add(str[i]);
 	int N;
 	scanf("%d", &N);
 	for (int i = 0; i < N; i++)
@@ -47,36 +58,32 @@ int main()
 		scanf(" %c", &c);
 		if (c == 'L')
 		{
-			if(ptr!=head)
+			if (ptr != head)
 				ptr = ptr->prev;
 		}
 		else if (c == 'D')
 		{
-			if(ptr->next!=tail)
+			if (ptr->next != tail)
 				ptr = ptr->next;
 		}
 		else if (c == 'B')
 		{
 			if (ptr != head)
 			{
-				Node* temp = ptr;
-				ptr->prev->next = temp->next;
-				ptr->next->prev = temp->prev;
-				ptr = temp->prev;
-				delete temp;
+				del();
 			}
 		}
 		else if (c == 'P')
 		{
 			char c2;
 			scanf(" %c", &c2);
-			Add(c2);
+			add(c2);
 		}
 	}
 	ptr = head->next;
-	while (ptr !=tail)
+	while (ptr != tail)
 	{
-		printf("%c", ptr->data);
+		printf("%c", ptr->c);
 		ptr = ptr->next;
 	}
 	puts("");
