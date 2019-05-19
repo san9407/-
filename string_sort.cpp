@@ -1,3 +1,4 @@
+//숫자는 내림차순,문자는 오름차순으로 정렬 cstrcmp < 0이면 오름차순 >0
 #include <cstdio>
 #pragma warning(disable:4996)
 
