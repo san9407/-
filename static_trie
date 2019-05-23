@@ -1,0 +1,84 @@
+//홍준이의 사전놀이
+int t, tmp;
+
+struct Trie
+{
+	bool terminal;
+	int cnt;
+	Trie* children[26];
+	void clear()
+	{
+		for (int i = 0; i < 26; i++)
+			children[i] = 0;
+	}
+	void insert(const char* str);
+	void query(int l, char* buf);
+};
+
+Trie node[500001];
+int nodeCnt;
+Trie* newNode()
+{
+	node[nodeCnt].terminal = false;
+	node[nodeCnt].cnt = 0;
+	return &node[nodeCnt++];
+}
+
+void Trie::insert(const char* str)
+{
+	cnt++;
+	if (*str == '\0')
+	{
+		terminal = true;
+		return;
+	}
+	else
+	{
+		int c = *str - 'a';
+		if (children[c] == 0)
+		{
+			children[c] = newNode();
+		}
+		children[c]->insert(str + 1);
+	}
+}
+
+void Trie::query(int l, char* buf)
+{
+	if (l < t)
+	{
+		int c = buf[l] - 'a';
+		if (children[c])
+			children[c]->query(l + 1, buf);
+	}
+	else
+	{
+		tmp = cnt;
+		return;
+	}
+}
+
+Trie* root;
+
+void init(void)
+{
+	for (int i = 0; i < nodeCnt; i++)
+		node[i].clear();
+	nodeCnt = 0;
+	root = newNode();
+}
+
+void insert(int buffer_size, char *buf)
+{
+	root->insert(buf);
+}
+
+int query(int buffer_size, char *buf)
+{
+	int ret = 0;
+	t = buffer_size;
+	tmp = 0;
+	root->query(0, buf);
+	ret = tmp;
+	return ret;
+}
