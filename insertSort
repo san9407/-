@@ -1,0 +1,64 @@
+//삽입정렬
+#include <cstdio>
+#include <cstring>
+using namespace std;
+#pragma warning(disable:4996)
+const int INF = 1000000000;
+const int MOD = 998244353;
+
+int N;
+
+struct Node
+{
+	int cnt;
+	char str[21];
+}arr[100];
+
+void insertsort()
+{
+	Node temp;
+	int i, j;
+	for (int i = 1; i < N; i++)
+	{
+		temp = arr[i];
+		j = i - 1;
+		while ((j >= 0) && (temp.cnt <= arr[j].cnt))
+		{
+			if (temp.cnt == arr[j].cnt)
+			{
+				if (strcmp(temp.str, arr[j].str) < 0)
+				{
+					arr[j + 1] = arr[j];
+					j--;
+				}
+				else
+					break;
+			}
+			else if (temp.cnt < arr[j].cnt)
+			{
+				arr[j + 1] = arr[j];
+				j--;
+			}
+		}
+		arr[j + 1] = temp;
+	}
+}
+
+int main()
+{
+	scanf("%d", &N);
+	for (int i = 0; i < N; i++)
+	{
+		int cnt;
+		char str[21];
+		scanf("%d %s", &cnt, str);
+		arr[i].cnt = cnt;
+		strcpy(arr[i].str, str);
+	}
+	insertsort();
+	for (int i = 0; i < N; i++)
+	{
+		printf("%d %s\n", arr[i].cnt, arr[i].str);
+	}
+	return 0;
+}
